@@ -1,21 +1,22 @@
-import SnapPage, { SnapSection } from '@/components/SnapPage'
 import Navbar from '@/components/Navbar'
 import Hero from '@/components/Hero'
 import About from '@/components/About'
+import HomepageRides from '@/components/HomepageRides'
+import HomepagePlanner from '@/components/HomepagePlanner'
+import HomepageJoin from '@/components/HomepageJoin'
 import Footer from '@/components/Footer'
 
 export default function Home() {
   return (
     <>
       <Navbar />
-      <SnapPage>
-        <SnapSection bg="#0A0A0A">
-          <Hero />
-        </SnapSection>
-        <SnapSection bg="#111111" id="about">
-          <About />
-        </SnapSection>
-      </SnapPage>
+      <main id="main-content">
+        <Hero />
+        <About />
+        <HomepageRides />
+        <HomepagePlanner />
+        <HomepageJoin />
+      </main>
       <Footer />
     </>
   )
