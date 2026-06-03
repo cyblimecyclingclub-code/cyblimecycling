@@ -18,16 +18,37 @@ export default function AdminSettings() {
 
   async function uploadKb(file: File) {
     setKbUploading(true)
-    setKbMsg('')
-    const fd = new FormData()
-    fd.append('file', file)
-    const res = await fetch('/api/knowledge-base', { method: 'POST', body: fd })
-    const data = await res.json()
-    if (data.success) {
-      setKbMsg(`✓ Uploaded — ${data.chars.toLocaleString()} characters extracted`)
-      setKbFile({ file_name: data.file, updated_at: new Date().toISOString() })
-    } else {
-      setKbMsg(`✗ ${data.error}`)
+    setKbMsg('Extracting text from PDF...')
+    try {
+      // Parse PDF client-side using PDF.js
+      const pdfjsLib = await import('pdfjs-dist')
+      pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`
+      const arrayBuffer = await file.arrayBuffer()
+      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise
+      let text = ''
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i)
+        const content = await page.getTextContent()
+        text += content.items.map((item) => ('str' in item ? item.str : '')).join(' ') + '\n'
+      }
+      text = text.trim()
+      if (!text) throw new Error('No text found in PDF')
+
+      // Save to Supabase via API
+      const res = await fetch('/api/knowledge-base', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ file_name: file.name, content: text }),
+      })
+      const data = await res.json()
+      if (data.success) {
+        setKbMsg(`✓ Uploaded — ${data.chars.toLocaleString()} characters extracted`)
+        setKbFile({ file_name: data.file, updated_at: new Date().toISOString() })
+      } else {
+        setKbMsg(`✗ ${data.error}`)
+      }
+    } catch (err) {
+      setKbMsg(`✗ ${err instanceof Error ? err.message : 'Failed to process PDF'}`)
     }
     setKbUploading(false)
   }
