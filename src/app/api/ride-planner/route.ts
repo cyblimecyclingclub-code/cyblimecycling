@@ -36,6 +36,9 @@ async function getKnowledge(): Promise<string> {
 }
 
 export async function POST(req: NextRequest) {
+  if (!process.env.GROQ_API_KEY) {
+    return NextResponse.json({ message: "The AI planner isn't configured yet. Hit us up on Instagram @brooklyncyblimecycling for ride help! 🚴" })
+  }
   try {
     const { messages } = await req.json()
     const knowledge = await getKnowledge()
@@ -78,6 +81,6 @@ RULES:
     console.error('Ride planner error:', error)
     return NextResponse.json({
       message: "Sorry, I'm taking a quick breather! Hit us up on Instagram @brooklyncyblimecycling for anything you need 🚴",
-    }, { status: 500 })
+    })
   }
 }
