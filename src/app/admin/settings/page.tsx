@@ -13,7 +13,7 @@ export default function AdminSettings() {
   const kbInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
-    fetch('/api/knowledge-base').then(r => r.json()).then(d => d && setKbFile(d))
+    supabase.from('knowledge_base').select('file_name, updated_at').order('updated_at', { ascending: false }).limit(1).single().then(({ data }) => data && setKbFile(data))
   }, [])
 
   async function uploadKb(file: File) {
@@ -34,19 +34,13 @@ export default function AdminSettings() {
       text = text.trim()
       if (!text) throw new Error('No text found in PDF')
 
-      // Save to Supabase via API
-      const res = await fetch('/api/knowledge-base', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ file_name: file.name, content: text }),
-      })
-      const data = await res.json()
-      if (data.success) {
-        setKbMsg(`✓ Uploaded — ${data.chars.toLocaleString()} characters extracted`)
-        setKbFile({ file_name: data.file, updated_at: new Date().toISOString() })
-      } else {
-        setKbMsg(`✗ ${data.error}`)
-      }
+      // Save directly to Supabase using authenticated session
+      const { error } = await supabase
+        .from('knowledge_base')
+        .upsert({ file_name: file.name, content: text, updated_at: new Date().toISOString() }, { onConflict: 'file_name' })
+      if (error) throw new Error(error.message)
+      setKbMsg(`✓ Uploaded — ${text.length.toLocaleString()} characters extracted`)
+      setKbFile({ file_name: file.name, updated_at: new Date().toISOString() })
     } catch (err) {
       setKbMsg(`✗ ${err instanceof Error ? err.message : 'Failed to process PDF'}`)
     }
