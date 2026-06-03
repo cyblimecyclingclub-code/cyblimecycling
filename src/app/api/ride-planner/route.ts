@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import Groq from 'groq-sdk'
 import { createClient } from '@supabase/supabase-js'
 
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
+let groq: Groq
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -39,6 +39,7 @@ export async function POST(req: NextRequest) {
   if (!process.env.GROQ_API_KEY) {
     return NextResponse.json({ message: "The AI planner isn't configured yet. Hit us up on Instagram @brooklyncyblimecycling for ride help! 🚴" })
   }
+  groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
   try {
     const { messages } = await req.json()
     const knowledge = await getKnowledge()
@@ -78,9 +79,8 @@ RULES:
     const message = response.choices[0]?.message?.content || ''
     return NextResponse.json({ message })
   } catch (error) {
-    console.error('Ride planner error:', error)
-    return NextResponse.json({
-      message: "Sorry, I'm taking a quick breather! Hit us up on Instagram @brooklyncyblimecycling for anything you need 🚴",
-    })
+    const msg = error instanceof Error ? error.message : String(error)
+    console.error('Ride planner error:', msg)
+    return NextResponse.json({ message: `Error: ${msg}` })
   }
 }
