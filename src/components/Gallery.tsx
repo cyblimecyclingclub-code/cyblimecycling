@@ -44,10 +44,12 @@ export default function Gallery() {
         </div>
 
         {/* Elfsight Instagram Feed */}
-        <div
-          className="elfsight-app-2d8d00ba-72e1-4194-ac43-a42805e820de"
-          data-elfsight-app-lazy
-        />
+        <div style={{ maxWidth: '100%', overflowX: 'hidden' }}>
+          <div
+            className="elfsight-app-2d8d00ba-72e1-4194-ac43-a42805e820de"
+            data-elfsight-app-lazy
+          />
+        </div>
       </div>
     </section>
   )

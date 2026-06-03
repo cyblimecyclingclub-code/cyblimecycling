@@ -77,6 +77,12 @@ body {
   }
 }
 
+/* Elfsight widget containment */
+.elfsight-app-2d8d00ba-72e1-4194-ac43-a42805e820de {
+  max-width: 100% !important;
+  overflow: hidden !important;
+}
+
 /* ADA: reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
