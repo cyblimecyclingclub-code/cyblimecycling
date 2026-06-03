@@ -24,11 +24,10 @@ async function getKnowledge(): Promise<string> {
       .select('content')
       .order('updated_at', { ascending: false })
       .limit(1)
-      .single()
-    if (data?.content) {
-      cachedKnowledge = data.content
+    if (data?.[0]?.content) {
+      cachedKnowledge = data[0].content
       cacheTime = Date.now()
-      return data.content
+      return data[0].content
     }
   } catch {
     // fall through to default

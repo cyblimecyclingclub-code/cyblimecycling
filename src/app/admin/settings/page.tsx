@@ -13,7 +13,7 @@ export default function AdminSettings() {
   const kbInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
-    supabase.from('knowledge_base').select('file_name, updated_at').order('updated_at', { ascending: false }).limit(1).single().then(({ data }) => data && setKbFile(data))
+    supabase.from('knowledge_base').select('file_name, updated_at').order('updated_at', { ascending: false }).limit(1).then(({ data }) => data?.[0] && setKbFile(data[0]))
   }, [])
 
   async function uploadKb(file: File) {

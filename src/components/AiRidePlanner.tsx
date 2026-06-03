@@ -28,7 +28,7 @@ export default function AiRidePlanner() {
     try {
       const res = await fetch('/api/ride-planner', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json; charset=utf-8' },
         body: JSON.stringify({ messages: newMessages }),
       })
       const data = await res.json()

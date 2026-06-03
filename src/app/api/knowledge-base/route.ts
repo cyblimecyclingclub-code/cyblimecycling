@@ -32,8 +32,7 @@ export async function GET() {
       .select('file_name, updated_at, content')
       .order('updated_at', { ascending: false })
       .limit(1)
-      .single()
-    return NextResponse.json(data || null)
+    return NextResponse.json(data?.[0] || null)
   } catch {
     return NextResponse.json(null)
   }
