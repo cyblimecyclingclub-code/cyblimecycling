@@ -35,9 +35,10 @@ export default function AdminSettings() {
       if (!text) throw new Error('No text found in PDF')
 
       // Save directly to Supabase using authenticated session
+      await supabase.from('knowledge_base').delete().neq('id', '00000000-0000-0000-0000-000000000000')
       const { error } = await supabase
         .from('knowledge_base')
-        .upsert({ file_name: file.name, content: text, updated_at: new Date().toISOString() }, { onConflict: 'file_name' })
+        .insert({ file_name: file.name, content: text, updated_at: new Date().toISOString() })
       if (error) throw new Error(error.message)
       setKbMsg(`✓ Uploaded — ${text.length.toLocaleString()} characters extracted`)
       setKbFile({ file_name: file.name, updated_at: new Date().toISOString() })
