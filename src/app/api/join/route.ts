@@ -21,6 +21,7 @@ export async function POST(req: NextRequest) {
       await resend.emails.send({
         from: 'CyBlime Website <onboarding@resend.dev>',
         to: 'cyblimecyclingclub@gmail.com',
+        reply_to: email,
         subject: `New Join Request — ${name}`,
         html: `
           <div style="font-family:sans-serif;max-width:600px;margin:0 auto;background:#0A0A0A;color:#fff;padding:32px;border-radius:12px;">
