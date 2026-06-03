@@ -19,8 +19,8 @@ export async function POST(req: NextRequest) {
     // Send email notification
     if (process.env.RESEND_API_KEY) {
       await resend.emails.send({
-        from: 'CyBlime Website <noreply@aagariabro.resend.app>',
-        to: 'cyblimecycling@gmail.com',
+        from: 'CyBlime Website <onboarding@resend.dev>',
+        to: 'cyblimecyclingclub@gmail.com',
         subject: `New Join Request — ${name}`,
         html: `
           <div style="font-family:sans-serif;max-width:600px;margin:0 auto;background:#0A0A0A;color:#fff;padding:32px;border-radius:12px;">
