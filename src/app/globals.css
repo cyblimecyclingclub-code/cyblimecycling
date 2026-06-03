@@ -1,0 +1,86 @@
+@import "tailwindcss";
+
+:root {
+  --background: #0A0A0A;
+  --foreground: #ffffff;
+  --orange: #F5A623;
+  --orange-dark: #D4891A;
+  --charcoal: #111111;
+  --card: #1A1A1A;
+  --border: #2A2A2A;
+  --text-muted: #888888;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-orange: var(--orange);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--orange);
+  color: #000;
+}
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--background); }
+::-webkit-scrollbar-thumb { background: var(--orange); border-radius: 2px; }
+
+/* ADA: visible focus ring for keyboard users */
+:focus-visible {
+  outline: 2px solid var(--orange);
+  outline-offset: 2px;
+}
+
+/* ADA: skip-to-content link */
+.skip-link {
+  position: absolute;
+  top: -9999px;
+  left: 0;
+  z-index: 9999;
+  background: var(--orange);
+  color: #000;
+  font-weight: 900;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0 0 8px 0;
+  text-decoration: none;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.skip-link:focus {
+  top: 0;
+}
+
+/* Mobile: min tap target size */
+@media (max-width: 768px) {
+  button, a, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* ADA: reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

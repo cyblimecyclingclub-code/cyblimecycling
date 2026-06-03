@@ -1,0 +1,4 @@
+/* Admin layout needs regular scrolling, not snap */
+body:has([data-admin]) {
+  overflow: auto !important;
+}
