@@ -1,5 +1,6 @@
 import Navbar from '@/components/Navbar'
 import BlogPostView from '@/components/BlogPostView'
+import Footer from '@/components/Footer'
 import { createServerClient } from '@/lib/supabase-server'
 import type { BlogPost } from '@/lib/supabase'
 import { notFound } from 'next/navigation'
@@ -29,6 +30,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
     <>
       <Navbar />
       <BlogPostView post={post} />
+      <Footer />
     </>
   )
 }

@@ -1,5 +1,6 @@
 import Navbar from '@/components/Navbar'
 import BlogList from '@/components/BlogList'
+import Footer from '@/components/Footer'
 import { createServerClient } from '@/lib/supabase-server'
 import type { BlogPost } from '@/lib/supabase'
 
@@ -26,6 +27,7 @@ export default async function BlogPage() {
     <>
       <Navbar />
       <BlogList posts={posts} />
+      <Footer />
     </>
   )
 }

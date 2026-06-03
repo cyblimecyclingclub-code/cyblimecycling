@@ -2,6 +2,7 @@ import SnapPage, { SnapSection } from '@/components/SnapPage'
 import Navbar from '@/components/Navbar'
 import Hero from '@/components/Hero'
 import About from '@/components/About'
+import Footer from '@/components/Footer'
 
 export default function Home() {
   return (
@@ -15,6 +16,7 @@ export default function Home() {
           <About />
         </SnapSection>
       </SnapPage>
+      <Footer />
     </>
   )
 }
