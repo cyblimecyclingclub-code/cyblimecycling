@@ -84,9 +84,10 @@ export default function Footer() {
           <p className="text-gray-600 text-xs">
             © {new Date().getFullYear()} CyBlime Cycling Club · Brooklyn, NY · Est. 2020
           </p>
-          <p className="text-gray-700 text-xs">
-            Built with passion for the ride
-          </p>
+          <div className="flex items-center gap-4">
+            <p className="text-gray-700 text-xs">Built with passion for the ride</p>
+            <Link href="/admin" className="text-gray-700 text-xs hover:text-gray-500 transition-colors">Admin</Link>
+          </div>
         </div>
       </div>
     </footer>
