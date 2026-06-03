@@ -3,15 +3,7 @@ import { ReactNode } from 'react'
 
 export default function SnapPage({ children }: { children: ReactNode }) {
   return (
-    <div
-      style={{
-        position: 'fixed',
-        top: 0, left: 0, right: 0, bottom: 0,
-        overflowY: 'scroll',
-        scrollSnapType: 'y mandatory',
-        scrollBehavior: 'smooth',
-      }}
-    >
+    <div>
       {children}
     </div>
   )
@@ -33,9 +25,7 @@ export function SnapSection({
       id={id}
       className={`relative flex items-center justify-center overflow-hidden ${className}`}
       style={{
-        height: '100dvh',
-        scrollSnapAlign: 'start',
-        scrollSnapStop: 'always',
+        minHeight: '100dvh',
         background: bg,
       }}
     >
