@@ -65,7 +65,7 @@ RULES:
 - No markdown headers, use plain text with line breaks`
 
     const response = await groq.chat.completions.create({
-      model: 'llama3-8b-8192',
+      model: 'llama-3.1-8b-instant',
       max_tokens: 500,
       messages: [
         { role: 'system', content: systemPrompt },
@@ -79,8 +79,7 @@ RULES:
     const message = response.choices[0]?.message?.content || ''
     return NextResponse.json({ message })
   } catch (error) {
-    const msg = error instanceof Error ? error.message : String(error)
-    console.error('Ride planner error:', msg)
-    return NextResponse.json({ message: `Error: ${msg}` })
+    console.error('Ride planner error:', error)
+    return NextResponse.json({ message: "Sorry, I'm taking a quick breather! Hit us up on Instagram @brooklyncyblimecycling for anything you need 🚴" })
   }
 }
