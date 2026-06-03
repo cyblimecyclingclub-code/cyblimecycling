@@ -1,13 +1,15 @@
 'use client'
 import Link from 'next/link'
 
-export default function Hero() {
+const FALLBACK = 'https://images.unsplash.com/photo-1534787238916-9ba6764efd4f?w=1800&q=80'
+
+export default function Hero({ image }: { image?: string }) {
   return (
     <div className="relative w-full flex items-center justify-center" style={{ minHeight: '100svh' }}>
       {/* Background image */}
       <div className="absolute inset-0 bg-cover bg-center"
         style={{
-          backgroundImage: `url('https://images.unsplash.com/photo-1534787238916-9ba6764efd4f?w=1800&q=80')`,
+          backgroundImage: `url('${image || FALLBACK}')`,
           filter: 'brightness(0.2)',
         }}
       />

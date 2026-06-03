@@ -1,6 +1,8 @@
 import Link from 'next/link'
 
-export default function About() {
+const FALLBACK = 'https://images.unsplash.com/photo-1571188654248-7a89213915f7?w=800&q=80'
+
+export default function About({ image }: { image?: string }) {
   return (
     <section id="about" style={{ background: '#111', borderTop: '1px solid #1A1A1A' }}>
       <div className="max-w-7xl mx-auto px-5 py-24">
@@ -47,7 +49,7 @@ export default function About() {
             {/* Main image */}
             <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid #2A2A2A' }}>
               <img
-                src="https://images.unsplash.com/photo-1571188654248-7a89213915f7?w=800&q=80"
+                src={image || FALLBACK}
                 alt="CyBlime riders"
                 className="w-full object-cover"
                 style={{ height: 'clamp(280px, 40vw, 480px)', filter: 'brightness(0.8)' }}

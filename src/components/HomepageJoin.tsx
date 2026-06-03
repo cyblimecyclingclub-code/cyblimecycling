@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import { CheckCircle, ArrowRight } from 'lucide-react'
 
+const FALLBACK = 'https://images.unsplash.com/photo-1541625602330-2277a4c46182?w=800&q=80'
+
 const PERKS = [
   'Weekly group rides for all levels',
   'Private group chat with live updates',
@@ -9,7 +11,7 @@ const PERKS = [
   'Community events & cycling trips',
 ]
 
-export default function HomepageJoin() {
+export default function HomepageJoin({ image }: { image?: string }) {
   return (
     <section style={{ background: '#0D0D0D', borderTop: '1px solid #1A1A1A' }}>
       <div className="max-w-7xl mx-auto px-5 py-24">
@@ -54,7 +56,7 @@ export default function HomepageJoin() {
           <div className="relative">
             <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid #242424' }}>
               <img
-                src="https://images.unsplash.com/photo-1541625602330-2277a4c46182?w=800&q=80"
+                src={image || FALLBACK}
                 alt="Cyclists riding together"
                 className="w-full object-cover"
                 style={{ height: '420px', filter: 'brightness(0.7)' }}
