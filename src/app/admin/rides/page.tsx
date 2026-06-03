@@ -23,7 +23,7 @@ export default function AdminRides() {
     if (isNew) {
       await supabase.from('rides').insert([editing])
     } else {
-      await supabase.from('rides').update(editing).eq('id', editing!.id)
+      await supabase.from('rides').update(editing!).eq('id', editing!.id)
     }
     setEditing(null)
     setIsNew(false)

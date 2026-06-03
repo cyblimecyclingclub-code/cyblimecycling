@@ -22,7 +22,7 @@ export default function AdminGallery() {
     if (isNew) {
       await supabase.from('gallery').insert([{ ...editing, order_index: photos.length }])
     } else {
-      await supabase.from('gallery').update(editing).eq('id', editing!.id)
+      await supabase.from('gallery').update(editing!).eq('id', editing!.id)
     }
     setEditing(null)
     setIsNew(false)
