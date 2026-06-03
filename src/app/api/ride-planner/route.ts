@@ -1,50 +1,84 @@
 import { NextRequest, NextResponse } from 'next/server'
-import Anthropic from '@anthropic-ai/sdk'
+import Groq from 'groq-sdk'
+import { createClient } from '@supabase/supabase-js'
 
-const client = new Anthropic()
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
 
-const SYSTEM_PROMPT = `You are CyBlime's AI Ride Planner — a passionate Brooklyn cycling expert and coach for CyBlime Cycling Club (@brooklyncyblimecycling).
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
 
-Your job: give riders personalized route recommendations for Brooklyn and NYC based on their location, time, fitness level, and preferences.
+// Cache knowledge base in memory (refreshes each cold start)
+let cachedKnowledge: string | null = null
+let cacheTime = 0
 
-Always include:
-- Route name & overview
-- Starting point and key landmarks
-- Estimated distance (miles) and duration
-- Pace recommendation
-- 2–3 specific roads/paths to take
-- One pro tip (parking, best time of day, what to bring, segment to chase)
-
-Know these routes well:
-- Prospect Park loops (3.35 miles per loop)
-- Brooklyn Bridge / Manhattan Bridge crossings
-- Bay Ridge waterfront (Shore Pkwy)
-- Verrazzano bridge approach
-- Prospect Park → Central Park connector (~20 miles)
-- GW Bridge from Brooklyn (~35 miles)
-- Floyd Bennett Field (flat, great for intervals)
-- Coney Island loop from Park Slope (~25 miles)
-
-Keep responses concise, energetic, and Brooklyn-flavored. Max 250 words. No markdown headers — use plain text with line breaks.`
+async function getKnowledge(): Promise<string> {
+  // Refresh cache every 10 minutes
+  if (cachedKnowledge && Date.now() - cacheTime < 10 * 60 * 1000) {
+    return cachedKnowledge
+  }
+  try {
+    const { data } = await supabase
+      .from('knowledge_base')
+      .select('content')
+      .order('updated_at', { ascending: false })
+      .limit(1)
+      .single()
+    if (data?.content) {
+      cachedKnowledge = data.content
+      cacheTime = Date.now()
+      return data.content
+    }
+  } catch {
+    // fall through to default
+  }
+  return ''
+}
 
 export async function POST(req: NextRequest) {
   try {
     const { messages } = await req.json()
+    const knowledge = await getKnowledge()
 
-    const response = await client.messages.create({
-      model: 'claude-haiku-4-5-20251001',
+    const systemPrompt = `You are the official AI assistant for CyBlime Cycling Club — a Brooklyn-based cycling community founded in 2020.
+
+Answer all questions with energy, passion, and Brooklyn attitude. Be welcoming, community-first, and never corporate.
+
+${knowledge
+  ? `KNOWLEDGE BASE — use ONLY this information to answer questions about the club. Do not make up any facts not found here:\n\n${knowledge}`
+  : `CORE FACTS:
+- Club: CyBlime Cycling Club | Est. 2020 | Brooklyn, NY
+- Instagram: @brooklyncyblimecycling
+- Website: cyblime-cyclingclub.com
+- Strava: strava.com/clubs/762372
+- Mission: Promoting cycling through passion, experience, and the next ride`}
+
+RULES:
+- Only answer questions about CyBlime, cycling, rides, membership, routes, and events
+- If you don't know something, direct users to Instagram DMs @brooklyncyblimecycling
+- NEVER make up ride dates, fees, or policies not in the knowledge base
+- Keep responses concise and energetic — max 200 words
+- No markdown headers, use plain text with line breaks`
+
+    const response = await groq.chat.completions.create({
+      model: 'llama3-8b-8192',
       max_tokens: 500,
-      system: SYSTEM_PROMPT,
-      messages: messages.map((m: { role: string; content: string }) => ({
-        role: m.role,
-        content: m.content,
-      })),
+      messages: [
+        { role: 'system', content: systemPrompt },
+        ...messages.map((m: { role: string; content: string }) => ({
+          role: m.role as 'user' | 'assistant',
+          content: m.content,
+        })),
+      ],
     })
 
-    const message = response.content[0].type === 'text' ? response.content[0].text : ''
+    const message = response.choices[0]?.message?.content || ''
     return NextResponse.json({ message })
   } catch (error) {
     console.error('Ride planner error:', error)
-    return NextResponse.json({ message: 'Sorry, the ride planner is taking a break. Hit us up on Instagram @brooklyncyblimecycling!' }, { status: 500 })
+    return NextResponse.json({
+      message: "Sorry, I'm taking a quick breather! Hit us up on Instagram @brooklyncyblimecycling for anything you need 🚴",
+    }, { status: 500 })
   }
 }
