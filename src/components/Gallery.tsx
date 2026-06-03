@@ -1,5 +1,5 @@
 'use client'
-import Script from 'next/script'
+import { useEffect } from 'react'
 
 function InstagramIcon({ size = 16 }: { size?: number }) {
   return (
@@ -12,6 +12,14 @@ function InstagramIcon({ size = 16 }: { size?: number }) {
 }
 
 export default function Gallery() {
+  useEffect(() => {
+    if (document.querySelector('script[src="https://elfsightcdn.com/platform.js"]')) return
+    const script = document.createElement('script')
+    script.src = 'https://elfsightcdn.com/platform.js'
+    script.async = true
+    document.body.appendChild(script)
+  }, [])
+
   return (
     <section id="gallery" className="py-24 px-5 w-full" style={{ background: '#111111' }}>
       <div className="max-w-7xl mx-auto">
@@ -36,7 +44,6 @@ export default function Gallery() {
         </div>
 
         {/* Elfsight Instagram Feed */}
-        <Script src="https://elfsightcdn.com/platform.js" strategy="lazyOnload" />
         <div
           className="elfsight-app-2d8d00ba-72e1-4194-ac43-a42805e820de"
           data-elfsight-app-lazy
